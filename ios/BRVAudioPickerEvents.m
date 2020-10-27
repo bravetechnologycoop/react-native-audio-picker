@@ -24,7 +24,7 @@ static NSArray<NSString*>* _supportedEvents;
 {
     if(!_hasListeners) {
         _hasListeners = YES;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeNotification:) name:nil object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bridgeNotification:) name:@"AVAudioSessionRouteChangeNotification" object:nil];
     }
 }
 
@@ -39,7 +39,7 @@ static NSArray<NSString*>* _supportedEvents;
 {
     if(_hasListeners)
     {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:nil];
+        [[NSNotificationCenter defaultCenter] removeObserver:@"AVAudioSessionRouteChangeNotification" name:nil object:nil];
     }
     _hasListeners = NO;
 }

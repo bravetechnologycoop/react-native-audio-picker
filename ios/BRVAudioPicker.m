@@ -19,12 +19,32 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(getAudioOutputType:(RCTResponseSenderBlock) callback)
+RCT_EXPORT_METHOD(getAudioOutput:(RCTResponseSenderBlock)callback)
 {
-    id result = [[[[[AVAudioSession sharedInstance] currentRoute] outputs] firstObject] portType];
+    AVAudioSessionPortDescription* outputObj = [[[[AVAudioSession sharedInstance] currentRoute] outputs] firstObject];
     
-    callback(@[[NSNull null], result]);
+    if(outputObj == nil) {
+        callback(@[[NSNull null], @{@"type": @"Unknown", @"name": @"Not Available"}]);
+        
+    } else {
+    callback(@[[NSNull null], @{@"type": outputObj.portName, @"name": outputObj.selectedDataSource.dataSourceName == nil ? @"Unknown" : outputObj.selectedDataSource.dataSourceName}]);
+    }
 }
+
+
+RCT_EXPORT_METHOD(getAvailableInputs:(RCTResponseSenderBlock)callback)
+{
+    NSMutableArray* inputPortArray = [[NSMutableArray alloc] init];
+    for(AVAudioSessionPortDescription* input in [[AVAudioSession sharedInstance] availableInputs])
+    {
+        if(![inputPortArray containsObject:[input portType]]) {
+            [inputPortArray addObject:[input portType]];
+        }
+    }
+    
+    callback(@[[NSNull null], inputPortArray]);
+}
+
 
 RCT_EXPORT_METHOD(presentAudioPicker:(RCTResponseSenderBlock) callback)
 {
@@ -39,7 +59,7 @@ RCT_EXPORT_METHOD(presentAudioPicker:(RCTResponseSenderBlock) callback)
             [button sendActionsForControlEvents:UIControlEventTouchUpInside];
         }
     }
-    callback(@[[NSNull null], [NSNull null]]);
+    callback(nil);
 }
 
 - (NSDictionary *)constantsToExport

@@ -1,17 +1,27 @@
 import * as React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import AudioPicker from 'react-native-audio-picker';
+import { StyleSheet, View, Text, Button } from 'react-native';
+import {AudioDeviceInfo, presentAudioPicker, getAudioDeviceType, getAudioDeviceName} from 'react-native-audio-picker';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const [audioDeviceType, setAudioDeviceType] = React.useState<string | undefined>(getAudioDeviceType());
+  const [audioDeviceName, setAudioDeviceName] = React.useState<string | undefined>(getAudioDeviceName());
 
   React.useEffect(() => {
-    AudioPicker.multiply(3, 7).then(setResult);
-  }, []);
+    setAudioDeviceType(getAudioDeviceType());
+    setAudioDeviceName(getAudioDeviceName());
+  });
+
+  function audioDeviceChanged(deviceType, deviceName) {
+    setAudioDeviceType(deviceType);
+    setAudioDeviceName(deviceName);
+  }
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Text>Type:{audioDeviceType}</Text>
+      <Text>Name:{audioDeviceName}</Text>
+      <AudioDeviceInfo onAudioDeviceChanged={audioDeviceChanged} />
+      <Button onPress={presentAudioPicker} title="Present Picker"/>
     </View>
   );
 }
