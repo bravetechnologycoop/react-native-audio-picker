@@ -11,7 +11,7 @@ import com.facebook.react.bridge.JavaScriptModule
 
 class AudioPickerPackage : ReactPackage {
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-        return Arrays.asList<NativeModule>(AudioPickerModule(reactContext))
+        return Arrays.asList<NativeModule>(AudioPicker(reactContext))
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {

@@ -19,7 +19,7 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(getAudioOutput:(RCTResponseSenderBlock)callback)
+//RCT_EXPORT_METHOD(getAudioOutput:(RCTResponseSenderBlock)callback)
 {
     AVAudioSessionPortDescription* outputObj = [[[[AVAudioSession sharedInstance] currentRoute] outputs] firstObject];
     

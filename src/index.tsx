@@ -1,4 +1,4 @@
-import { NativeModules, NativeEventEmitter, View, Text } from 'react-native';
+import { NativeModules, NativeEventEmitter, View, Text, Platform } from 'react-native';
 import { requireNativeComponent, ViewProps } from 'react-native';
 import React, { Component } from 'react';
 
@@ -28,7 +28,11 @@ class AudioInfo {
   }
 
   presentAudioPicker = () => {
-    this.audioPicker.presentAudioPicker(() => { });
+    if (Platform.OS === 'ios') {
+      this.audioPicker.presentAudioPicker(() => { });
+    } else {
+      console.warn("Picker is not supported on this platform.");
+    }
   }
 
   getCurrentAudioDeviceType = () => {
@@ -37,6 +41,18 @@ class AudioInfo {
 
   getCurrentAudioDeviceName = () => {
     return this.currentDeviceName;
+  }
+
+  useSpeaker = () => {
+    this.audioPicker.useSpeaker(() => { });
+  }
+
+  useEarpiece = () => {
+    this.audioPicker.useEarpiece(() => { });
+  }
+
+  useBluetooth = () => {
+    this.audioPicker.useBluetooth(() => { });
   }
 
   start() {
@@ -63,6 +79,7 @@ export const presentAudioPicker = () => { AudioPicker.presentAudioPicker(); }
 export const getAudioDeviceType = () => { return AudioPicker.getCurrentAudioDeviceType(); }
 export const getAudioDeviceName = () => { return AudioPicker.getCurrentAudioDeviceName(); }
 
+export const useBluetooth = () => { AudioPicker.useBluetooth(); }
 
 // Component version, unsure if this is a little bit too much, it's a HoC for sure but, it's a little strange.
 // Lots of repeated code, could we just pull the pre-existing instance and leverage it?
@@ -108,7 +125,6 @@ export class AudioDeviceInfo extends Component<AudioDeviceInfoProps, IAudioDevic
     if (result) {
       this.setState({ currentAudioDeviceType: result["type"], currentAudioDeviceName: result["name"] }, () => { console.log("state updated") });
       if (this.props.onAudioDeviceChanged) {
-        console.log("Updating props...")
         this.props.onAudioDeviceChanged(result["type"], result["name"]);
       }
     }
